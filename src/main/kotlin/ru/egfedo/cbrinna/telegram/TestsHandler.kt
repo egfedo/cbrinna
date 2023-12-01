@@ -1,26 +1,24 @@
-package telegram
+package ru.egfedo.cbrinna.telegram
 
-import database.question.DatabaseInterface
-import telegram.data.UserTestTempData
-import database.question.DatabaseList
-import database.user.UserData
-import database.user.UserDataStorage
 import eu.vendeli.tgbot.TelegramBot
 import eu.vendeli.tgbot.api.deleteMessage
 import eu.vendeli.tgbot.api.message
 import eu.vendeli.tgbot.interfaces.Keyboard
-import eu.vendeli.tgbot.types.*
-import eu.vendeli.tgbot.types.inline.InlineQueryResult
-import eu.vendeli.tgbot.types.inline.InlineQueryResultsButton
-import eu.vendeli.tgbot.types.internal.CallbackQueryUpdate
+import eu.vendeli.tgbot.types.Message
+import eu.vendeli.tgbot.types.ParseMode
+import eu.vendeli.tgbot.types.User
 import eu.vendeli.tgbot.types.internal.MessageUpdate
 import eu.vendeli.tgbot.types.internal.Response
 import eu.vendeli.tgbot.types.internal.getOrNull
 import eu.vendeli.tgbot.types.keyboard.ReplyKeyboardRemove
 import eu.vendeli.tgbot.utils.builders.inlineKeyboardMarkup
 import eu.vendeli.tgbot.utils.builders.replyKeyboardMarkup
-import telegram.data.FrontendQuestion
-import telegram.data.FrontendTest
+import ru.egfedo.cbrinna.database.question.DatabaseInterface
+import ru.egfedo.cbrinna.database.question.DatabaseList
+import ru.egfedo.cbrinna.database.user.UserDataStorage
+import ru.egfedo.cbrinna.telegram.data.FrontendQuestion
+import ru.egfedo.cbrinna.telegram.data.FrontendTest
+import ru.egfedo.cbrinna.telegram.data.UserTestTempData
 import kotlin.math.round
 
 object TestsHandler {
@@ -158,7 +156,7 @@ object TestsHandler {
      * @param bot active bot instance
      */
     private suspend fun displayCurrentQuestion(bot: TelegramBot, user: User) {
-        val userTempData = this.userData[user.id] ?: return
+        val userTempData = userData[user.id] ?: return
         val keyboard: Keyboard = if (userTempData.entries[userTempData.questionID].type == FrontendQuestion.Type.OneAnswer) singleKeyboard
         else multipleKeyboard
         message { userTempData.entries[userTempData.questionID].toString() + "Отправь мне сообщения с номерами ответов без проеблов"}.options { parseMode = ParseMode.MarkdownV2 }.markup(keyboard).send(user, bot)
@@ -174,7 +172,7 @@ object TestsHandler {
      */
     suspend fun startTest(bot: TelegramBot, user: User, name: String, amount: Int, filter: String) {
         deletePrevMessage(user, bot)
-        var userTempData = this.userData[user.id]
+        var userTempData = userData[user.id]
         bot.inputListener[user] = "testRunning"
         if (userTempData != null) {
             if (userTempData.questionID != -1) {
@@ -184,13 +182,13 @@ object TestsHandler {
         }
         val userData = UserDataStorage[user.id]
         val entries = when (filter) {
-            "All" -> DatabaseList.contents[name]!!.getRandomEntries(amount)
-            "New" -> DatabaseList.contents[name]!!.getRandomEntries(amount, userData)
-            "Wrong" -> DatabaseList.contents[name]!!.getRandomEntries(amount, userData, DatabaseInterface.GetMode.Only)
-            else -> DatabaseList.contents[name]!!.getRandomEntries(amount)
-        }
+            "All" -> DatabaseList.contents[name]!!.getEntries()
+            "New" -> DatabaseList.contents[name]!!.getEntries(userData)
+            "Wrong" -> DatabaseList.contents[name]!!.getEntries(userData, DatabaseInterface.GetMode.Only)
+            else -> DatabaseList.contents[name]!!.getEntries()
+        }.take(amount).toList()
 
-        this.userData[user.id] = UserTestTempData(entries)
+        TestsHandler.userData[user.id] = UserTestTempData(entries)
         message { "*Поехали\\!*"}.options { parseMode = ParseMode.MarkdownV2 }.send(user, bot)
         displayCurrentQuestion(bot, user)
     }
@@ -203,7 +201,7 @@ object TestsHandler {
      */
     suspend fun testRoutine(bot: TelegramBot, user: User, update: MessageUpdate) {
         if (update.message.text == "/stop") {
-            val tempUserData = this.userData[user.id]!!
+            val tempUserData = userData[user.id]!!
             if (tempUserData.questionID == 0)
                 message {"Нихуя не сделал и ливнул, молодец!!!"}.markup(ReplyKeyboardRemove()).send(user, bot);
             else
@@ -224,7 +222,7 @@ object TestsHandler {
             bot.inputListener[user] = "testRunning"
             return
         }
-        val tempUserData = this.userData[user.id]!!
+        val tempUserData = userData[user.id]!!
         val currentQuestion = tempUserData.entries[tempUserData.questionID]
         if (currentQuestion.type == FrontendQuestion.Type.MultipleAnswers) {
             if (msgText != "Готово") {

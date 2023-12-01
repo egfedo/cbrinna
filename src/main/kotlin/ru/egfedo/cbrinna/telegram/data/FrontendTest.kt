@@ -1,6 +1,6 @@
-package telegram.data
+package ru.egfedo.cbrinna.telegram.data
 
-import database.question.DatabaseInterface
+import ru.egfedo.cbrinna.database.question.DatabaseInterface
 
 data class FrontendTest (
     val id: String,

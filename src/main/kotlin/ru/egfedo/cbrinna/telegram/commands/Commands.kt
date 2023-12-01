@@ -1,7 +1,5 @@
-package telegram.commands
+package ru.egfedo.cbrinna.telegram.commands
 
-import database.question.DatabaseList
-import database.user.UserDataStorage
 import eu.vendeli.tgbot.TelegramBot
 import eu.vendeli.tgbot.annotations.CommandHandler
 import eu.vendeli.tgbot.annotations.InputHandler
@@ -14,8 +12,9 @@ import eu.vendeli.tgbot.types.User
 import eu.vendeli.tgbot.types.chat.ChatType
 import eu.vendeli.tgbot.types.inline.InlineQueryResult
 import eu.vendeli.tgbot.types.internal.*
-import telegram.TestsHandler
-import kotlin.Pair
+import ru.egfedo.cbrinna.database.question.DatabaseList
+import ru.egfedo.cbrinna.database.user.UserDataStorage
+import ru.egfedo.cbrinna.telegram.TestsHandler
 
 val categoryPlaceholders = mapOf(
     Pair("civilLaw", "гражданскому праву"),
