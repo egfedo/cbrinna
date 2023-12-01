@@ -1,6 +1,4 @@
-package telegram.data
-
-import telegram.data.FrontendQuestion
+package ru.egfedo.cbrinna.telegram.data
 
 /**
  * User temporary data for currently running test.

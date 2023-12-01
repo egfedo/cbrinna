@@ -1,6 +1,4 @@
-package database.user
-
-import com.squareup.moshi.Json
+package ru.egfedo.cbrinna.database.user
 
 /**
  * Actual user data which is stored in json format.

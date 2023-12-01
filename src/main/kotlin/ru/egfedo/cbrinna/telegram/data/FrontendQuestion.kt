@@ -1,7 +1,7 @@
-package telegram.data
+package ru.egfedo.cbrinna.telegram.data
 
-import database.question.Question
-import database.question.Answer
+import ru.egfedo.cbrinna.database.question.Question
+import ru.egfedo.cbrinna.database.question.Answer
 
 /**
  * Question to actually be displayed to user.
