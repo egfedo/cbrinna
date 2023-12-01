@@ -18,8 +18,8 @@ data class UserData(
 
     val encounteredQuestions: MutableMap<String, MutableSet<String>> = mutableMapOf(
         Pair("civilLaw", mutableSetOf()),
-        Pair("constLaw", mutableSetOf()),
-    )
+        Pair("constLaw", mutableSetOf()),),
+    var lastMessage: Long = -1
 ) {
     @Transient
     val composedDBs: MutableMap<String, MutableSet<String>> = mutableMapOf(
@@ -29,7 +29,7 @@ data class UserData(
         return UserData(id, correctAnswers, totalAnswers,
             allowedDBs.toMutableSet(),
             wrongAnswerList.toMutableMap(),
-            encounteredQuestions.toMutableMap())
+            encounteredQuestions.toMutableMap(), lastMessage)
     }
 
     fun getEncounteredAmount(key: String, ignoreComposed: Boolean = false) : Int {

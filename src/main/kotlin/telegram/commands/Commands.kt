@@ -62,7 +62,6 @@ class Commands {
         update: CallbackQueryUpdate,
         @ParamMapping("name") name: String
     ) {
-        deleteButtonMsg(user, bot, update)
         TestsHandler.chooseFilter(user, bot, name)
     }
 
@@ -74,7 +73,6 @@ class Commands {
         @ParamMapping("name") name: String,
         update: CallbackQueryUpdate
     ) {
-        deleteButtonMsg(user, bot, update)
         TestsHandler.chooseAmount(user, bot, name, filter)
     }
 
@@ -87,7 +85,6 @@ class Commands {
         @ParamMapping("name") name: String,
         @ParamMapping("filter") filter: String
     ) {
-        deleteButtonMsg(user, bot, update)
         TestsHandler.startTest(bot, user, name, amount, filter)
     }
 
@@ -178,7 +175,7 @@ class Commands {
         if (update is MessageUpdate) {
             if (update.message.document != null) {
                 val userData = UserDataStorage[user.id]
-                if ("fileSend" in userData!!.allowedDBs) {
+                if ("fileSend" in userData.allowedDBs) {
                     message { "Я заблокировала твоё отправление файлов из-за спама!" }.send(user, bot)
                     return
                 }

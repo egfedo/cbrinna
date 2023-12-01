@@ -18,7 +18,7 @@ import kotlin.math.min
  * This db implementation is loaded/saved to json.
  *
  */
-open class Database(filename: String, prefix: String = "", dbID: String = ""): DatabaseInterface {
+class Database(filename: String, prefix: String = "", dbID: String = ""): DatabaseInterface {
     private val questionList: MutableMap<Int, Question>
     private val questionSet: MutableSet<Question>
     private val adapter: JsonAdapter<MapWrapper>

@@ -13,7 +13,7 @@ import java.io.InputStream
  */
 object UserDataStorage {
     private val userMap: MutableMap<Long, UserData>
-    val filename = "/Users/egfedo/IdeaProjects/CyberInna/user_data.json"
+    val filename = "../data/user/user_data.json"
     private val adapter: JsonAdapter<UserDataMapWrapper>
     init {
         val inputStream: InputStream = File(filename).inputStream()
